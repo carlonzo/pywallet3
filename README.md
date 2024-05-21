@@ -1,7 +1,28 @@
-Requirements:
-- Python 2.x
-- Python 3 support in progress
+# RecRanger's Pywallet Fork
 
+A fork of [jackjack-jj's pywallet](https://github.com/jackjack-jj/pywallet), better maintained
+and ready for Python 3 usage on modern systems.
+
+## Status
+
+This fork aims to incrementally refactor Pywallet into a more maintainable configuration. 
+
+### Working Features
+
+* None yet
+
+### Upcoming Features
+
+* Data recovery tool
+
+### Unsupported Features
+
+* Everything else :(
+
+
+## Usage
+
+```
 Usage: pywallet.py [options]
 
 Options:
@@ -26,17 +47,20 @@ Options:
                         prints balance of KEY_BALANCE
   --web                 run pywallet web interface
   --port=PORT           port of web interface (defaults to 8989)
+```
 
-Dependencies:
+## Dependencies
 
-Debian-based Linux:
- aptitude install build-essential python-dev python-bsddb3
+### Debian-based Linux
+```bash
+sudo apt install build-essential python3 python3-dev python-bsddb3
+```
 
-Mac OS X:
+### Mac OS X:
  1. Install MacPorts from http://www.macports.org/
- 2. sudo port install python27 py27-pip py-bsddb python_select
- 3. sudo port select --set python python27
- 4. sudo easy_install ecdsa
-
-Windows: 
- Just install Python 2.7
+ 2. Install:
+ 
+```bash
+sudo port install python27 py27-pip py-bsddb python_select
+sudo easy_install ecdsa
+```
