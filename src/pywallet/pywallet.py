@@ -5560,7 +5560,7 @@ if __name__ == "__main__":
         passphraseRecov = None
         while not passphraseRecov:
             passphraseRecov = getpass.getpass(
-                "Enter the passphrase for the wallet that will contain all the recovered keys%s: "
+                "Enter the passphrase for the NEW wallet containing all the recovered keys%s: "
                 % ("" if passphraseRecov is None else " (can't be empty)")
             )
         passphrase = passphraseRecov
@@ -5581,15 +5581,17 @@ if __name__ == "__main__":
                 if p != "":
                     passes.append(p)
 
-        print("\nYou provided %d possible passphrases.")
+        print("\nYou provided %d possible passphrases." % len(passes))
 
         print("\nStarting recovery.")
         recoveredKeys = recov(device, passes, size, 10240, options.recov_outputdir)
         recoveredKeys = list(set(recoveredKeys))
+        print("\nDone recov(...). Found %d unique keys." % len(recoveredKeys))
         # 		print(recoveredKeys[0:5])
 
         db_env = create_env(options.recov_outputdir)
         recov_wallet_name = "recovered_wallet_%s.dat" % ts()
+        print("Making a new wallet %s/%s" % (options.recov_outputdir, recov_wallet_name))
 
         create_new_wallet(db_env, recov_wallet_name, 32500)
 
@@ -5597,6 +5599,7 @@ if __name__ == "__main__":
             passphraseRecov
             != "I don't want to put a password on the recovered wallet and I know what can be the consequences."
         ):
+            print("Encrypting the new wallet with the passphrase you provided.")
             db = open_wallet(db_env, recov_wallet_name, True)
 
             NPP_salt = os.urandom(8)
@@ -5640,7 +5643,7 @@ if __name__ == "__main__":
                 plural(len(recoveredKeys)),
             )
         )
-
+        print("Done successful recovery. Exiting.")
         exit(0)
 
     if "bsddb" in missing_dep:
