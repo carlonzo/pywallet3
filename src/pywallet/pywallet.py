@@ -1983,6 +1983,7 @@ if crypter is None:
         from Crypto.Cipher import AES
 
         crypter = Crypter_pycrypto()
+        print("Using pycrypto/pycryptodome for AES encryption")
     except:
         try:
             import ctypes
@@ -1990,8 +1991,10 @@ if crypter is None:
 
             ssl = ctypes.cdll.LoadLibrary(ctypes.util.find_library("ssl") or "libeay32")
             crypter = Crypter_ssl()
+            print("Using libssl for AES encryption")
         except:
             crypter = Crypter_pure()
+            print("Using pure python for AES encryption")
             logging.warning("pycrypto or libssl not found, decryption may be slow")
 
 

@@ -11,6 +11,10 @@ RUN apt-get update && \
 # Clone the pywallet repository
 # RUN git clone https://github.com/RecRanger/pywallet /pywallet
 COPY ./src/pywallet/ /pywallet/
+COPY ./requirements.txt /pywallet/
+
+RUN apt-get install -y python-pip
+RUN pip install -r /pywallet/requirements.txt
 
 # Set the working directory to /pywallet
 WORKDIR /pywallet
