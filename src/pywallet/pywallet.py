@@ -171,9 +171,7 @@ aversions[111] = "Testnet"
 
 
 class Network(
-    collections.namedtuple(
-        "Network", "name p2pkh_prefix p2sh_prefix wif_prefix segwit_hrp"
-    )
+    collections.namedtuple("Network", "name p2pkh_prefix p2sh_prefix wif_prefix segwit_hrp")
 ):
     instances = []
 
@@ -202,9 +200,7 @@ def eip55(hex_addr):
                 checksummed_buffer += character
         else:
             raise ValueError(
-                "Unrecognized hex character {} at position {}".format(
-                    character, nibble_index
-                )
+                "Unrecognized hex character {} at position {}".format(character, nibble_index)
             )
     return "0x" + checksummed_buffer
 
@@ -373,9 +369,7 @@ def keccak_f(state):
         B = zero()
         for x in rangeW:
             for y in rangeH:
-                B[y % W][(2 * x + 3 * y) % H] = rol(
-                    A[x][y], RotationConstants[y][x], lanew
-                )
+                B[y % W][(2 * x + 3 * y) % H] = rol(A[x][y], RotationConstants[y][x], lanew)
         for x in rangeW:
             for y in rangeH:
                 A[x][y] = B[x][y] ^ ~B[(x + 1) % W][y] & B[(x + 2) % W][y]
@@ -1530,28 +1524,16 @@ class AES(object):
         g = self.galois_multiplication
 
         column[0] = (
-            g(cpy[0], mult[0])
-            ^ g(cpy[3], mult[1])
-            ^ g(cpy[2], mult[2])
-            ^ g(cpy[1], mult[3])
+            g(cpy[0], mult[0]) ^ g(cpy[3], mult[1]) ^ g(cpy[2], mult[2]) ^ g(cpy[1], mult[3])
         )
         column[1] = (
-            g(cpy[1], mult[0])
-            ^ g(cpy[0], mult[1])
-            ^ g(cpy[3], mult[2])
-            ^ g(cpy[2], mult[3])
+            g(cpy[1], mult[0]) ^ g(cpy[0], mult[1]) ^ g(cpy[3], mult[2]) ^ g(cpy[2], mult[3])
         )
         column[2] = (
-            g(cpy[2], mult[0])
-            ^ g(cpy[1], mult[1])
-            ^ g(cpy[0], mult[2])
-            ^ g(cpy[3], mult[3])
+            g(cpy[2], mult[0]) ^ g(cpy[1], mult[1]) ^ g(cpy[0], mult[2]) ^ g(cpy[3], mult[3])
         )
         column[3] = (
-            g(cpy[3], mult[0])
-            ^ g(cpy[2], mult[1])
-            ^ g(cpy[1], mult[2])
-            ^ g(cpy[0], mult[3])
+            g(cpy[3], mult[0]) ^ g(cpy[2], mult[1]) ^ g(cpy[1], mult[2]) ^ g(cpy[0], mult[3])
         )
         return column
 
@@ -1581,17 +1563,13 @@ class AES(object):
             i += 1
         state = self.subBytes(state, False)
         state = self.shiftRows(state, False)
-        state = self.addRoundKey(
-            state, self.createRoundKey(expandedKey, 16 * nbrRounds)
-        )
+        state = self.addRoundKey(state, self.createRoundKey(expandedKey, 16 * nbrRounds))
         return state
 
     # Perform the initial operations, the standard round, and the final
     # operations of the inverse aes, creating a round key for each round
     def aes_invMain(self, state, expandedKey, nbrRounds):
-        state = self.addRoundKey(
-            state, self.createRoundKey(expandedKey, 16 * nbrRounds)
-        )
+        state = self.addRoundKey(state, self.createRoundKey(expandedKey, 16 * nbrRounds))
         i = nbrRounds - 1
         while i > 0:
             state = self.aes_invRound(state, self.createRoundKey(expandedKey, 16 * i))
@@ -1889,9 +1867,7 @@ class AESModeOfOperation(object):
 
 
 class Crypter_pycrypto(object):
-    def SetKeyFromPassphrase(
-        self, vKeyData, vSalt, nDerivIterations, nDerivationMethod
-    ):
+    def SetKeyFromPassphrase(self, vKeyData, vSalt, nDerivIterations, nDerivationMethod):
         if nDerivationMethod != 0:
             return 0
         data = str_to_bytes(vKeyData) + vSalt
@@ -1908,9 +1884,7 @@ class Crypter_pycrypto(object):
         self.chIV = iv[0:16]
 
     def Encrypt(self, data):
-        return AES.new(self.chKey, AES.MODE_CBC, self.chIV).encrypt(
-            append_PKCS7_padding(data)
-        )
+        return AES.new(self.chKey, AES.MODE_CBC, self.chIV).encrypt(append_PKCS7_padding(data))
 
     def Decrypt(self, data):
         return AES.new(self.chKey, AES.MODE_CBC, self.chIV).decrypt(data)[0:32]
@@ -1921,9 +1895,7 @@ class Crypter_ssl(object):
         self.chKey = ctypes.create_string_buffer(32)
         self.chIV = ctypes.create_string_buffer(16)
 
-    def SetKeyFromPassphrase(
-        self, vKeyData, vSalt, nDerivIterations, nDerivationMethod
-    ):
+    def SetKeyFromPassphrase(self, vKeyData, vSalt, nDerivIterations, nDerivationMethod):
         if nDerivationMethod != 0:
             return 0
         strKeyData = ctypes.create_string_buffer(vKeyData)
@@ -1978,9 +1950,7 @@ class Crypter_pure(object):
         self.cbc = self.m.modeOfOperation["CBC"]
         self.sz = self.m.aes.keySize["SIZE_256"]
 
-    def SetKeyFromPassphrase(
-        self, vKeyData, vSalt, nDerivIterations, nDerivationMethod
-    ):
+    def SetKeyFromPassphrase(self, vKeyData, vSalt, nDerivIterations, nDerivationMethod):
         if nDerivationMethod != 0:
             return 0
         data = str_to_bytes(vKeyData) + vSalt
@@ -2327,9 +2297,7 @@ def i2d_ECPrivateKey(pkey, compressed=False):  # , crypted=True):
     part3 = "a081a53081a2020101302c06072a8648ce3d0101022100"  # for uncompressed keys
     if compressed:
         if True:  # not crypted:  ## Bitcoin accepts both part3's for crypted wallets...
-            part3 = (
-                "a08185308182020101302c06072a8648ce3d0101022100"  # for compressed keys
-            )
+            part3 = "a08185308182020101302c06072a8648ce3d0101022100"  # for compressed keys
         key = (
             "3081d30201010420"
             + "%064x" % pkey.secret
@@ -2517,10 +2485,7 @@ def ASecretToSecret(sec):
     if not vch:
         return False
     if ordsix(vch[0]) != network.wif_prefix:
-        print(
-            "Warning: adress prefix seems bad (%d vs %d)"
-            % (ordsix(vch[0]), network.wif_prefix)
-        )
+        print("Warning: adress prefix seems bad (%d vs %d)" % (ordsix(vch[0]), network.wif_prefix))
     return vch[1:]
 
 
@@ -2631,9 +2596,7 @@ def overlapped_read(f, sz, overlap, maxlen=None):
         yield buffer
 
 
-def search_patterns_on_disk(
-    device, size, inc, patternlist
-):  # inc must be higher than 1k
+def search_patterns_on_disk(device, size, inc, patternlist):  # inc must be higher than 1k
     try:
         otype = os.O_RDONLY | os.O_BINARY
     except:
@@ -2662,19 +2625,13 @@ def search_patterns_on_disk(
             lendataloaded = len(data) - len(datakept)  # should be inc
             for text in patternlist:
                 if text in data:
-                    BlocksToInspect[text].append(
-                        [i - len(datakept), data, len(datakept)]
-                    )
+                    BlocksToInspect[text].append([i - len(datakept), data, len(datakept)])
                     pass
-            sizetokeep = (
-                20  # 20 because all the patterns have a len<20. Could be higher.
-            )
+            sizetokeep = 20  # 20 because all the patterns have a len<20. Could be higher.
             i += lendataloaded
         except Exception as exc:
             if lendataloaded % 512 > 0:
-                raise Exception(
-                    "SPOD error 1: %d, %d" % (lendataloaded, i - len(datakept))
-                )
+                raise Exception("SPOD error 1: %d, %d" % (lendataloaded, i - len(datakept)))
             os.lseek(fd, lendataloaded, os.SEEK_CUR)
             print(str(exc))
             i += lendataloaded
@@ -2824,10 +2781,7 @@ def recov(device, passes, size=102400, inc=10240, outputdir="."):
         f = open(outputdir + "/pywallet_partial_recovery_%d.json" % ts(), "w")
         f.write(json.dumps(r))
         f.close()
-        print(
-            "\nRead %.1f Go in %.1f minutes\n"
-            % (r["PRFsize"] // 1e9, r["PRFdt"] // 60.0)
-        )
+        print("\nRead %.1f Go in %.1f minutes\n" % (r["PRFsize"] // 1e9, r["PRFdt"] // 60.0))
     else:
         prf = device[20:]
         f = open(prf, "r")
@@ -2903,9 +2857,7 @@ def recov(device, passes, size=102400, inc=10240, outputdir="."):
                 sys.stdout.flush()
                 failures_in_a_row = 0
                 # 				print("SKFP params:", pp, mk.salt, mk.iterations, mk.method)
-                res = crypter.SetKeyFromPassphrase(
-                    pp, mk.salt, mk.iterations, mk.method
-                )
+                res = crypter.SetKeyFromPassphrase(pp, mk.salt, mk.iterations, mk.method)
                 if res == 0:
                     print("Unsupported derivation method")
                     sys.exit(1)
@@ -2950,9 +2902,7 @@ def recov(device, passes, size=102400, inc=10240, outputdir="."):
                 "Trying all the remaining possibilities (%d) might take up to %d minutes."
                 % (
                     len(ckeys_not_decrypted) * len(passes) * len(mkeys),
-                    int(
-                        len(ckeys_not_decrypted) * len(passes) * len(mkeys) // calcspeed
-                    ),
+                    int(len(ckeys_not_decrypted) * len(passes) * len(mkeys) // calcspeed),
                 )
             )
             cont = raw_input("Do you want to test them? (y/n): ")
@@ -3143,9 +3093,7 @@ def read_keys(device, list_offsets):
         data = os.read(fd, 40)
         hexkey = binascii.hexlify(data[1:33])
         after_key = binascii.hexlify(data[33:39])
-        if hexkey not in found_hexkeys and check_postkeys(
-            binascii.unhexlify(after_key), postkeys
-        ):
+        if hexkey not in found_hexkeys and check_postkeys(binascii.unhexlify(after_key), postkeys):
             found_hexkeys.append(hexkey)
 
     os.close(fd)
@@ -3593,9 +3541,7 @@ def merge_keys_lists(la, lb):
     return llr
 
 
-def merge_wallets(
-    wadir, wa, wbdir, wb, wrdir, wr, passphrase_a, passphrase_b, passphrase_r
-):
+def merge_wallets(wadir, wa, wbdir, wb, wrdir, wr, passphrase_a, passphrase_b, passphrase_r):
     global passphrase
     passphrase_LAST = passphrase
 
@@ -3935,12 +3881,8 @@ def read_wallet(
                     {
                         "n": d["n"],
                         "addr": public_key_to_bc_address(d["public_key"]),
-                        "addr2": public_key_to_bc_address(
-                            binascii.unhexlify(d["public_key"])
-                        ),
-                        "addr3": public_key_to_bc_address(
-                            binascii.hexlify(d["public_key"])
-                        ),
+                        "addr2": public_key_to_bc_address(binascii.unhexlify(d["public_key"])),
+                        "addr3": public_key_to_bc_address(binascii.hexlify(d["public_key"])),
                         "nTime": d["nTime"],
                         "nVersion": d["nVersion"],
                         "public_key_hex": d["public_key"],
@@ -4131,21 +4073,17 @@ def parse_private_key(sec, force_compressed=None):
             if len(sec) < 64:
                 compressed = as_compressed(False)
                 warnings.warn(
-                    "Padding with zeroes, %scompressed"
-                    % ("un" if not compressed else "")
+                    "Padding with zeroes, %scompressed" % ("un" if not compressed else "")
                 )
                 try:
-                    pkey = EC_KEY(
-                        str_to_long(binascii.unhexlify("0" * (64 - len(sec)) + sec))
-                    )
+                    pkey = EC_KEY(str_to_long(binascii.unhexlify("0" * (64 - len(sec)) + sec)))
                 except Exception as e:
                     warnings.warn(e)
                     raise Exception("Failed padding with zeroes")
             elif len(sec) > 66:
                 compressed = as_compressed(False)
                 warnings.warn(
-                    "Keeping first 64 characters, %scompressed"
-                    % ("un" if not compressed else "")
+                    "Keeping first 64 characters, %scompressed" % ("un" if not compressed else "")
                 )
                 pkey = EC_KEY(str_to_long(binascii.unhexlify(sec[:64])))
             else:
@@ -4204,9 +4142,7 @@ def keyinfo(sec, network=None, print_info=False, force_compressed=None):
                 "    For compressed keys, the hexadecimal private key sometimes contains an extra '01' at the end"
             )
         print("Hash160:             %s" % bytes_to_str(binascii.hexlify(h160)))
-        print(
-            "Pubkey:              %s" % bytes_to_str(binascii.hexlify(ser_public_key))
-        )
+        print("Pubkey:              %s" % bytes_to_str(binascii.hexlify(ser_public_key)))
         if int(binascii.hexlify(secret), 16) > _r:
             warnings.warn(
                 "/!\\ Beware, 0x%s is equivalent to 0x%.33x"
@@ -4265,9 +4201,7 @@ def importprivkey(db, sec, label, reserve, verbose=True):
             e = crypter.Encrypt(secret)
             ck_epk = e
 
-            update_wallet(
-                db, "ckey", {"public_key": public_key, "encrypted_private_key": ck_epk}
-            )
+            update_wallet(db, "ckey", {"public_key": public_key, "encrypted_private_key": ck_epk})
     else:
         update_wallet(db, "key", {"public_key": public_key, "private_key": private_key})
 
@@ -4339,8 +4273,7 @@ def import_csv_keys(filename, wdir, wname, nbremax=9999999):
     for i in range(len(content)):
         c = content[i]
         global_merging_message = [
-            "Merging: " + str(round(100.0 * (i + 1) // len(content), 1)) + "%"
-            for j in range(2)
+            "Merging: " + str(round(100.0 * (i + 1) // len(content), 1)) + "%" for j in range(2)
         ]
         if ";" in c and len(c) > 0 and c[0] != "#":
             cs = c.split(";")
@@ -4354,9 +4287,7 @@ def import_csv_keys(filename, wdir, wname, nbremax=9999999):
 
     db.close()
 
-    read_wallet(
-        json_db, db_env, wname, True, True, "", None, True
-    )  # Fill the pool if empty
+    read_wallet(json_db, db_env, wname, True, True, "", None, True)  # Fill the pool if empty
 
     return True
 
@@ -4512,9 +4443,7 @@ def create_transaction(
         )
         i += 1
 
-    tx = ct(
-        hashes_txin, indexes_txin, sig_txin, pubkey_txin, amounts_txout, scriptPubkey
-    )
+    tx = ct(hashes_txin, indexes_txin, sig_txin, pubkey_txin, amounts_txout, scriptPubkey)
     hashtx = binascii.hexlify(Hash(binascii.unhexlify(tx)))
 
     for i in range(len(sig_txin)):
@@ -4692,9 +4621,7 @@ class tx:
             print("priv key not found (addr:" + self.ins[n]["addr"] + ")")
             return ""
 
-        self.ins[n]["sig"] = sign_message(
-            binascii.unhexlify(sec), txcopy.get_tx(), True
-        )
+        self.ins[n]["sig"] = sign_message(binascii.unhexlify(sec), txcopy.get_tx(), True)
 
     def ser():
         r = Bdict({})
@@ -4855,9 +4782,7 @@ def retrieve_last_pywallet_md5():
     global md5_last_pywallet
     md5_last_pywallet = [
         True,
-        md5_onlinefile(
-            "https://raw.github.com/jackjack-jj/pywallet/master/pywallet.py"
-        ),
+        md5_onlinefile("https://raw.github.com/jackjack-jj/pywallet/master/pywallet.py"),
     ]
 
 
@@ -5102,9 +5027,7 @@ class Mnemonic(object):
         if len(mnemonic_list) not in [12, 15, 18, 21, 24]:
             return False
         try:
-            idx = map(
-                lambda x: bin(self.wordlist.index(x))[2:].zfill(11), mnemonic_list
-            )
+            idx = map(lambda x: bin(self.wordlist.index(x))[2:].zfill(11), mnemonic_list)
             b = "".join(idx)
         except ValueError:
             return False
@@ -5135,9 +5058,7 @@ class Mnemonic(object):
         passphrase = "mnemonic" + passphrase
         mnemonic_bytes = mnemonic.encode("utf-8")
         passphrase_bytes = passphrase.encode("utf-8")
-        stretched = hashlib.pbkdf2_hmac(
-            "sha512", mnemonic_bytes, passphrase_bytes, PBKDF2_ROUNDS
-        )
+        stretched = hashlib.pbkdf2_hmac("sha512", mnemonic_bytes, passphrase_bytes, PBKDF2_ROUNDS)
         return stretched[:64]
 
     @classmethod
@@ -5183,9 +5104,7 @@ def parse_ckd_path(str_path):
     return path_split
 
 
-class Xpriv(
-    collections.namedtuple("XprivNT", "version depth prt_fpr childnr cc ktype key")
-):
+class Xpriv(collections.namedtuple("XprivNT", "version depth prt_fpr childnr cc ktype key")):
     xpriv_fmt = ">IB4sI32sB32s"
 
     def __new__(cls, *a, **kw):
@@ -5240,17 +5159,11 @@ class Xpriv(
         xprivs = [self]
         while rev_path_split:
             children_nrs = rev_path_split.pop()
-            xprivs = [
-                parent.ckd_xpriv(child_nr)
-                for parent in xprivs
-                for child_nr in children_nrs
-            ]
+            xprivs = [parent.ckd_xpriv(child_nr) for parent in xprivs for child_nr in children_nrs]
         return xprivs
 
     def set_fullpath(self, base, x):
-        self.fullpath = (
-            base + "/" + ("%d'" % (x - 0x80000000) if x >= 0x80000000 else "%d" % x)
-        )
+        self.fullpath = base + "/" + ("%d'" % (x - 0x80000000) if x >= 0x80000000 else "%d" % x)
         return self
 
     def ckd_xpriv(self, *indexes):
@@ -5265,17 +5178,12 @@ class Xpriv(
         par_pubk = keyinfo(self, None, False, True).public_key
         seri = struct.pack(">I", i)
         if i >= 0x80000000:
-            I = hmac.new(
-                self.cc, b"\x00" + self.key + seri, digestmod=hashlib.sha512
-            ).digest()
+            I = hmac.new(self.cc, b"\x00" + self.key + seri, digestmod=hashlib.sha512).digest()
         else:
             I = hmac.new(self.cc, par_pubk + seri, digestmod=hashlib.sha512).digest()
         il, ir = I[:32], I[32:]
         pk = (
-            hex(
-                (int(binascii.hexlify(il), 16) + int(binascii.hexlify(self.key), 16))
-                % _r
-            )[2:]
+            hex((int(binascii.hexlify(il), 16) + int(binascii.hexlify(self.key), 16)) % _r)[2:]
             .replace("L", "")
             .zfill(64)
         )
@@ -5321,8 +5229,7 @@ def dump_bip32_privkeys(xpriv, paths="m/0", fmt="addr", **kw):
         pass
     for child in xpriv.multi_ckd_xpriv(paths):
         print(
-            "%s: %s"
-            % (child.fullpath, dump_key(keyinfo(child, kw.get("network"), False, True)))
+            "%s: %s" % (child.fullpath, dump_key(keyinfo(child, kw.get("network"), False, True)))
         )
 
 
@@ -5449,9 +5356,7 @@ if __name__ == "__main__":
         help="includes balance of each address in the json dump, takes about 2 minutes per 100 addresses",
     )
 
-    parser.add_option(
-        "--importprivkey", dest="key", help="import private key from vanitygen"
-    )
+    parser.add_option("--importprivkey", dest="key", help="import private key from vanitygen")
 
     parser.add_option(
         "--importhex", dest="keyishex", action="store_true", help="DEPRECATED, useless"
@@ -5522,9 +5427,7 @@ if __name__ == "__main__":
         help="deletes data in your wallet, according to the file provided",
     )
 
-    parser.add_option(
-        "--balance", dest="key_balance", help="prints balance of KEY_BALANCE"
-    )
+    parser.add_option("--balance", dest="key_balance", help="prints balance of KEY_BALANCE")
 
     parser.add_option(
         "--recover",
@@ -5549,6 +5452,12 @@ if __name__ == "__main__":
         "--recov_outputdir",
         dest="recov_outputdir",
         help="output directory where the recovered wallet will be put",
+    )
+
+    parser.add_option(
+        "--recov_wordlist",
+        dest="recov_wordlist",
+        help="path to a file with one-password-per-line to test for wallet recovery",
     )
 
     parser.add_option(
@@ -5652,19 +5561,27 @@ if __name__ == "__main__":
         passphrase = passphraseRecov
 
         passes = []
-        p = " "
-        print("\nEnter the possible passphrases used in your deleted wallets.")
-        print(
-            "Don't forget that more passphrases = more time to test the possibilities."
-        )
-        print("Write one passphrase per line and end with an empty line.")
-        while p != "":
-            p = getpass.getpass("Possible passphrase: ")
-            if p != "":
-                passes.append(p)
+        if options.recov_wordlist:
+            with open(options.recov_wordlist, "r") as f:
+                passes = f.readlines()
+            passes = [p.strip() for p in passes]
+            print("\nRead %d possible passphrases from %s" % (len(passes), options.recov_wordlist))
+        else:
+            p = " "
+            print("\nEnter the possible passphrases used in your deleted wallets.")
+            print("Don't forget that more passphrases = more time to test the possibilities.")
+            print("Write one passphrase per line and end with an empty line.")
+            while p != "":
+                p = getpass.getpass("Possible passphrase: ")
+                if p != "":
+                    passes.append(p)
+
+        print("\nYou provided %d possible passphrases.")
 
         print("\nStarting recovery.")
-        recoveredKeys = recov(device, passes, size, 10240, options.recov_outputdir)
+        recoveredKeys = recov(
+            device, passes, size, 10240, options.recov_outputdir, options.recov_wordlist
+        )
         recoveredKeys = list(set(recoveredKeys))
         # 		print(recoveredKeys[0:5])
 
@@ -5683,9 +5600,7 @@ if __name__ == "__main__":
             NPP_rounds = int(50000 + random.random() * 20000)
             NPP_method = 0
             NPP_MK = os.urandom(32)
-            crypter.SetKeyFromPassphrase(
-                passphraseRecov, NPP_salt, NPP_rounds, NPP_method
-            )
+            crypter.SetKeyFromPassphrase(passphraseRecov, NPP_salt, NPP_rounds, NPP_method)
             NPP_EMK = crypter.Encrypt(NPP_MK)
             update_wallet(
                 db,
@@ -5755,8 +5670,7 @@ if __name__ == "__main__":
             options.walletfile = options.datadir + os.path.sep + options.walletfile
         if not os.path.isfile(options.walletfile):
             print(
-                "ERROR: wallet file %s can't be found"
-                % repr(os.path.realpath(options.walletfile))
+                "ERROR: wallet file %s can't be found" % repr(os.path.realpath(options.walletfile))
             )
             exit()
         db_dir, wallet_name = os.path.split(os.path.realpath(options.walletfile))
@@ -5770,12 +5684,8 @@ if __name__ == "__main__":
         try:
             network = find_network(options.otherversion)
             if not network:
-                network = Network(
-                    "Unknown network", int(options.otherversion), None, None, None
-                )
-                print(
-                    "Some network info is missing: please use the complete network format"
-                )
+                network = Network("Unknown network", int(options.otherversion), None, None, None)
+                print("Some network info is missing: please use the complete network format")
         except:
             network_info = options.otherversion.split(",")
             parse_int = lambda x: int(x, 16) if x.startswith("0x") else int(x)
@@ -5890,9 +5800,7 @@ if __name__ == "__main__":
         )
         exit()
 
-    read_wallet(
-        json_db, db_env, wallet_name, True, True, "", not (options.dumpbalance is None)
-    )
+    read_wallet(json_db, db_env, wallet_name, True, True, "", not (options.dumpbalance is None))
 
     if json_db.get("minversion", 99999999) > max_version:
         print("Version mismatch (must be <= %d)" % max_version)
