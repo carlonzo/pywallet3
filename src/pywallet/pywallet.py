@@ -2912,6 +2912,7 @@ def recov(device, passes, size=102400, inc=10240, outputdir="."):
             while len(cont) == 0:
                 cont = raw_input("Do you want to test them? (y/n): ")
                 if cont[0] == "y":
+                    print("Starting to test the remaining possibilities (ckeys * passwords * mkeys)")
                     refused_to_test_all_pps = False
                     cpt = 0
                     for dist, mko, mk in tl:
@@ -2938,6 +2939,7 @@ def recov(device, passes, size=102400, inc=10240, outputdir="."):
                                     ck.mkey = mk
                                     ck.privkey = secret
                                 cpt += 1
+                    print("Tested %d possibilities/combinations total" % cpt)
 
         print("")
         ckeys_not_decrypted = filter(lambda x: x[1].privkey == None, ckeys)
