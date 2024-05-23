@@ -2908,38 +2908,37 @@ def recov(device, passes, size=102400, inc=10240, outputdir="."):
                     int(len(ckeys_not_decrypted) * len(passes) * len(mkeys) // calcspeed),
                 )
             )
-            cont = raw_input("Do you want to test them? (y/n): ")
-            while len(cont) == 0:
-                cont = raw_input("Do you want to test them? (y/n): ")
-                if cont[0] == "y":
-                    print("Starting to test the remaining possibilities (ckeys * passwords * mkeys)")
-                    refused_to_test_all_pps = False
-                    cpt = 0
-                    for dist, mko, mk in tl:
-                        for ppi, pp in enumerate(passes):
-                            res = crypter.SetKeyFromPassphrase(
-                                pp, mk.salt, mk.iterations, mk.method
-                            )
-                            if res == 0:
-                                logging.error("Unsupported derivation method")
-                                sys.exit(1)
-                            masterkey = crypter.Decrypt(mk.encrypted_key)
-                            crypter.SetKey(masterkey)
-                            for cko, ck in ckeys_not_decrypted:
-                                tl = map(lambda x: [abs(x[0] - cko)] + x, mkeys)
-                                tl = sorted(tl, key=lambda x: x[0])
-                                if mk == tl[0][2]:
-                                    continue  # because already tested
-                                crypter.SetIV(Hash(ck.public_key))
-                                secret = crypter.Decrypt(ck.encrypted_pk)
-                                compressed = ck.public_key[0] != "\04"
 
-                                pkey = EC_KEY(int(b"0x" + binascii.hexlify(secret), 16))
-                                if ck.public_key == GetPubKey(pkey, compressed):
-                                    ck.mkey = mk
-                                    ck.privkey = secret
-                                cpt += 1
-                    print("Tested %d possibilities/combinations total" % cpt)
+            cont = raw_input("Do you want to test them? (y/n): ")
+            if cont.strip().lower()[0] == "y":
+                print("Starting to test the remaining possibilities (ckeys * passwords * mkeys)")
+                refused_to_test_all_pps = False
+                cpt = 0
+                for dist, mko, mk in tl:
+                    for ppi, pp in enumerate(passes):
+                        res = crypter.SetKeyFromPassphrase(pp, mk.salt, mk.iterations, mk.method)
+                        if res == 0:
+                            logging.error("Unsupported derivation method")
+                            sys.exit(1)
+                        masterkey = crypter.Decrypt(mk.encrypted_key)
+                        crypter.SetKey(masterkey)
+                        for cko, ck in ckeys_not_decrypted:
+                            tl = map(lambda x: [abs(x[0] - cko)] + x, mkeys)
+                            tl = sorted(tl, key=lambda x: x[0])
+                            if mk == tl[0][2]:
+                                continue  # because already tested
+                            crypter.SetIV(Hash(ck.public_key))
+                            secret = crypter.Decrypt(ck.encrypted_pk)
+                            compressed = ck.public_key[0] != "\04"
+
+                            pkey = EC_KEY(int(b"0x" + binascii.hexlify(secret), 16))
+                            if ck.public_key == GetPubKey(pkey, compressed):
+                                ck.mkey = mk
+                                ck.privkey = secret
+                            cpt += 1
+                print("Tested %d possibilities/combinations total" % cpt)
+            else:
+                print("Skipping testing all combinations.")
 
         print("")
         ckeys_not_decrypted = filter(lambda x: x[1].privkey == None, ckeys)
