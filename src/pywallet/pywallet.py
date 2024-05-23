@@ -5544,9 +5544,14 @@ if __name__ == "__main__":
             or options.recov_outputdir is None
         ):
             print(
-                "You must provide the device, the number of bytes to read and the output directory"
+                "You must provide the device, the number of bytes to read, and the output directory"
             )
-            exit(0)
+            exit(1)
+
+        if not os.path.isdir(options.recov_outputdir):
+            os.makedirs(options.recov_outputdir)
+            print("Created output directory %s" % options.recov_outputdir)
+
         device = options.recov_device
         if len(device) in [2, 3] and device[1] == ":":
             device = "\\\\.\\" + device
@@ -5579,9 +5584,7 @@ if __name__ == "__main__":
         print("\nYou provided %d possible passphrases.")
 
         print("\nStarting recovery.")
-        recoveredKeys = recov(
-            device, passes, size, 10240, options.recov_outputdir
-        )
+        recoveredKeys = recov(device, passes, size, 10240, options.recov_outputdir)
         recoveredKeys = list(set(recoveredKeys))
         # 		print(recoveredKeys[0:5])
 
