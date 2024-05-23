@@ -5580,7 +5580,7 @@ if __name__ == "__main__":
 
         print("\nStarting recovery.")
         recoveredKeys = recov(
-            device, passes, size, 10240, options.recov_outputdir, options.recov_wordlist
+            device, passes, size, 10240, options.recov_outputdir
         )
         recoveredKeys = list(set(recoveredKeys))
         # 		print(recoveredKeys[0:5])
