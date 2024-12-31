@@ -2195,7 +2195,7 @@ class BytesEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, bytes):
             # representing bytes in hex
-            return '0x' + obj.hex()
+            return bytes_to_str(obj)
         return super().default(obj)
 
 class Signature(object):
