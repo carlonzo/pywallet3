@@ -127,6 +127,9 @@ class Bdict(dict):
                 pass
             self[bytes_to_str(k)] = v
 
+    def has_key(self, k):
+        return super(Bdict, self).__contains__(k)
+
     def update(self, *a, **kw):
         other = self.__class__(*a, **kw)
         return super(Bdict, self).update(other)
@@ -2188,6 +2191,12 @@ def inverse_mod(a, m):
     else:
         return ud + m
 
+class BytesEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, bytes):
+            # representing bytes in hex
+            return '0x' + obj.hex()
+        return super().default(obj)
 
 class Signature(object):
     def __init__(self, r, s):
@@ -5828,7 +5837,7 @@ if __name__ == "__main__":
         if options.dumpformat == "addr":
             addrs = list(map(lambda x: x["addr"], json_db["keys"] + json_db["pool"]))
             json_db = addrs
-        wallet = json.dumps(json_db, sort_keys=True, indent=4)
+        wallet = json.dumps(json_db, sort_keys=True, indent=4, cls=BytesEncoder)
         print(wallet)
         exit()
     elif options.key:
